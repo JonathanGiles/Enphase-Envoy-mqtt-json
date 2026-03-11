@@ -12,5 +12,6 @@
   "MQTT_TOPIC": "/envoy/json",
   "DEBUG": false,
   "BATTERY_INSTALLED": false,
-  "PUBLISH_INTERVAL": 0
+  "PUBLISH_INTERVAL": 0,
+  "USE_SSE": true
 }

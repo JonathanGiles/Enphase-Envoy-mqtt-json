@@ -24,6 +24,7 @@ options:
   BATTERY_INSTALLED: false
   DEBUG: false
   PUBLISH_INTERVAL: 0
+  USE_SSE: true
 
 schema:
   MQTT_HOST: str
@@ -40,3 +41,4 @@ schema:
   BATTERY_INSTALLED: bool
   DEBUG: bool
   PUBLISH_INTERVAL: int
+  USE_SSE: bool

@@ -52,6 +52,7 @@ def load_config():
             "DEBUG": os.getenv("DEBUG", "False"),
             "BATTERY_INSTALLED": os.getenv("BATTERY_INSTALLED", "False"),
             "PUBLISH_INTERVAL": os.getenv("PUBLISH_INTERVAL", "0"),
+            "USE_SSE": os.getenv("USE_SSE", "True"),
         }
     # Fall back to options.json
     else:
@@ -86,6 +87,7 @@ USE_FREEDS= option_dict["USE_FREEDS"]
 BATTERY_INSTALLED= option_dict["BATTERY_INSTALLED"]
 DEBUG= option_dict["DEBUG"]
 PUBLISH_INTERVAL= int(option_dict.get("PUBLISH_INTERVAL", "0"))  # Publish interval in seconds (default: 0 = no delay)
+USE_SSE= option_dict.get("USE_SSE", False)
 MQTT_TOPIC_FREEDS = "Inverter/GridWatts"
 ####  End Settings - no changes after this line
 
@@ -421,6 +423,38 @@ def scrape_stream_meters():
         except requests.exceptions.RequestException as e:
             print(dt_string, ' Exception fetching stream data: %s' % e)
 
+def scrape_stream_sse():
+    global ENVOY_TOKEN
+    ENVOY_TOKEN=token_gen(ENVOY_TOKEN)
+    marker = b'data: '
+    last_publish = 0
+    while True:
+        try:
+            url = 'https://%s/stream/meter' % ENVOY_HOST
+            headers = {"Authorization": "Bearer " + ENVOY_TOKEN}
+            if DEBUG: print(dt_string, 'SSE Url:', url)
+            response = requests.get(url, timeout=5, verify=False, headers=headers, stream=True)
+            if response.status_code == 401:
+                print(dt_string, 'SSE: Failed to authenticate', response, ' generating new token')
+                ENVOY_TOKEN = token_gen(None)
+                continue
+            elif response.status_code != 200:
+                print(dt_string, 'SSE: Failed connect to Envoy got', response)
+                time.sleep(5)
+                continue
+            for line in response.iter_lines():
+                if line.startswith(marker):
+                    current_time = time.time()
+                    if current_time - last_publish >= PUBLISH_INTERVAL:
+                        data = json.loads(line.replace(marker, b''))
+                        if DEBUG: print(dt_string, 'SSE data:', data)
+                        json_string = json.dumps(data)
+                        client.publish(topic=MQTT_TOPIC, payload=json_string, qos=0)
+                        last_publish = current_time
+        except requests.exceptions.RequestException as e:
+            print(dt_string, ' SSE: Exception fetching stream data: %s' % e)
+            time.sleep(5)
+
 def scrape_stream():
     serial = serialNumber.encode("utf-8")
     ENVOY_PASSWORD=emupwGetMobilePasswd(serial, userName)
@@ -463,7 +497,11 @@ def main():
     #Use url http://envoy.local/ivp/meters/reading
     #stream_thread = threading.Thread(target=scrape_stream_meters)
 
-    if envoy_version == 5:
+    if USE_SSE and envoy_version != 5:
+        print(dt_string, 'Using SSE mode with /stream/meter endpoint (publish interval: %ds)' % PUBLISH_INTERVAL)
+        stream_thread = threading.Thread(target=scrape_stream_sse)
+        stream_thread.start()
+    elif envoy_version == 5:
         stream_thread = threading.Thread(target=scrape_stream)
         stream_thread.start()
     elif BATTERY_INSTALLED:

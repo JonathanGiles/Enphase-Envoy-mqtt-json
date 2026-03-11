@@ -26,6 +26,7 @@ services:
       - DEBUG=${DEBUG:-False}
       - BATTERY_INSTALLED=${BATTERY_INSTALLED:-False}
       - PUBLISH_INTERVAL=${PUBLISH_INTERVAL:-0}
+      - USE_SSE=${USE_SSE:-True}
     
     # Network mode - use bridge for standard networking
     network_mode: bridge
