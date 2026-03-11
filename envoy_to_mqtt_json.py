@@ -48,6 +48,7 @@ def load_config():
             "ENVOY_USER": os.getenv("ENVOY_USER", ""),
             "ENVOY_PASSWORD": os.getenv("ENVOY_PASSWORD", ""),
             "ENVOY_USER_PASS": os.getenv("ENVOY_USER_PASS", ""),
+            "ENVOY_USE_HTTPS": os.getenv("ENVOY_USE_HTTPS", "True"),
             "USE_FREEDS": os.getenv("USE_FREEDS", "False"),
             "DEBUG": os.getenv("DEBUG", "False"),
             "BATTERY_INSTALLED": os.getenv("BATTERY_INSTALLED", "False"),
