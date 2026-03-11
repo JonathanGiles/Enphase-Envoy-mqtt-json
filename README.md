@@ -5,6 +5,9 @@ A Python script that takes a real time json stream from an Enphase Envoy and pub
 Now works with 7.x.x and 8.x.x firmware - thanks to @helderd
 
 > [!NOTE]
+> **December 2025** - FW D8.3.5286 (da7504) and probably onwards removed the non-SSL, port 80 & http://.. endpoints from local Envoys but https:// ones are (still) available. Added the ENVOY_USE_HTTPS toggle switch in the configuration to address this and make the add-on use https:// based requests. with thanks to https://github.com/joergbattermann
+
+> [!NOTE]
 > **September 2024** - Added ability to utilise Battery data on V7 or V8 firmware (v5 not supported). To enable, turn on the toggle switch BATTERY_INSTALLED in configuration, then setup templates per Battery examples - thanks to @Underlyingglitch
 
 > [!WARNING]

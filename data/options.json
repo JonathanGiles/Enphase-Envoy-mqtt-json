@@ -7,9 +7,10 @@
   "ENVOY_USER": "your.enphase.email@example.com",
   "ENVOY_PASSWORD": "legacy_field",
   "ENVOY_USER_PASS": "your_enphase_password",
-  "USE_FREEDS": "False",
+  "ENVOY_USE_HTTPS": false,
+  "USE_FREEDS": false,
   "MQTT_TOPIC": "/envoy/json",
-  "DEBUG": "False",
-  "BATTERY_INSTALLED": "False",
-  "PUBLISH_INTERVAL": "0"
+  "DEBUG": false,
+  "BATTERY_INSTALLED": false,
+  "PUBLISH_INTERVAL": 0
 }

@@ -1,6 +1,6 @@
 name: "Stream mqtt from Enphase Envoy"
 description: "Converts Envoy Json to mqtt - V5, v7 and v8 with batteries"
-version: "1.0.20"
+version: "1.0.22"
 slug: "envoy_to_mqtt_json"
 init: false
 arch:
@@ -19,9 +19,10 @@ options:
   ENVOY_PASSWORD: enter.envoy.password
   ENVOY_USER: enter.enphase.userid@email.com
   ENVOY_USER_PASS: enter.enphase.password
-  USE_FREEDS: False
-  BATTERY_INSTALLED: False
-  DEBUG: False
+  ENVOY_USE_HTTPS: false
+  USE_FREEDS: false
+  BATTERY_INSTALLED: false
+  DEBUG: false
   PUBLISH_INTERVAL: 0
 
 schema:
@@ -34,6 +35,7 @@ schema:
   ENVOY_PASSWORD: password
   ENVOY_USER: str
   ENVOY_USER_PASS: password
+  ENVOY_USE_HTTPS: bool
   USE_FREEDS: bool
   BATTERY_INSTALLED: bool
   DEBUG: bool
