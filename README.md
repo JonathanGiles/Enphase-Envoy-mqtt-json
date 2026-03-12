@@ -49,7 +49,8 @@ Now works with 7.x.x and 8.x.x firmware - thanks to @helderd
 | `USE_FREEDS` | No | False | Enable FreeDS integration |
 | `DEBUG` | No | False | Enable debug logging |
 | `BATTERY_INSTALLED` | No | False | Set to True if you have Enphase batteries |
-| `PUBLISH_INTERVAL` | No | 0 | How often to publish to MQTT in seconds (0 = no delay) |
+| `PUBLISH_INTERVAL` | No | 0 | Minimum seconds between MQTT publishes. With SSE mode, `0` publishes every event (~1/second). With polling mode, this is the delay between requests — **recommended `30` or higher** to avoid overwhelming the Envoy |
+| `USE_SSE` | No | True | Use real-time SSE streaming (`/stream/meter`) instead of polling. Delivers ~1 update/second with negligible load on the Envoy. Set to `False` to use legacy polling mode (not recommended unless SSE is unavailable on your firmware) |
 
 ## Installation Method 1 - as a Home Assistant addon.
 
@@ -65,9 +66,16 @@ For detailed Docker and Portainer deployment instructions (including environment
 
 ## Example Output
 
-### Example output for FW 5
+### SSE mode (default, all firmware versions)
 
-The resulting mqtt topic should look like this example:
+**Config:** `USE_SSE: true` (default), `PUBLISH_INTERVAL: 0`
+
+SSE mode uses the Envoy's `/stream/meter` Server-Sent Events endpoint to receive real-time data updates approximately once per second. Because the Envoy pushes data to the client over a single persistent connection, this places negligible load on the Envoy — making it safe and efficient to receive continuous updates.
+
+This is the recommended mode for all firmware versions (5.x, 7.x, 8.x).
+
+> [!NOTE]
+> FW 5.x only supports SSE mode (the `USE_SSE` setting is ignored for v5 — it always uses SSE with digest authentication).
 
 ```json
 {
@@ -188,7 +196,19 @@ More info here: https://www.greenwoodsolutions.com.au/news-posts/real-apparent-r
 - `"pf"` = Power Factor
 - `"f"` = Frequency
 
-### Example output for FW 7 and FW 8
+### Polling mode (legacy, FW 7/8 only)
+
+**Config:** `USE_SSE: false`, `PUBLISH_INTERVAL: 30` (recommended)
+
+Polling mode makes individual HTTP requests to the Envoy's `/ivp/meters/readings` endpoint on each interval. Each request is a separate connection, so **you should set `PUBLISH_INTERVAL` to `30` or higher** to avoid overwhelming the Envoy with repeated requests.
+
+Use this mode only if SSE is unavailable on your Envoy firmware, or if you specifically need the cumulative energy data fields (`actEnergyDlvd`, `actEnergyRcvd`) that are not available via SSE.
+
+> [!NOTE]
+> The polling format includes additional fields not available via SSE: `timestamp`, `actEnergyDlvd`, `actEnergyRcvd`, `apparentEnergy`, `reactEnergyLagg`, `reactEnergyLead`, and per-channel breakdowns.
+
+> [!WARNING]
+> The polling output format is structurally different from SSE — if you switch between modes, you will need to update your Home Assistant templates or other downstream consumers.
 
 The resulting mqtt topic should look like this example:
 

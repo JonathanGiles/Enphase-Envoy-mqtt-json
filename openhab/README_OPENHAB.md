@@ -2,6 +2,12 @@
 
 This directory contains OpenHAB configuration files to integrate your Enphase Envoy MQTT data stream.
 
+> **SSE vs Polling:** The `solar.things` file in this directory uses the **polling** (livedata/milliwatt) format.
+> If you have `USE_SSE: true` (the default), use the SSE version instead:
+> [`examples/sse/openhab/solar.things`](../examples/sse/openhab/solar.things).
+>
+> See [`examples/README.md`](../examples/README.md) for a full comparison of both modes.
+
 ## Files
 
 - **solar.things** - MQTT Thing definition with channels for all Envoy data points

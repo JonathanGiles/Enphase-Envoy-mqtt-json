@@ -36,9 +36,22 @@
 
 ## Home Assistant Configuration Examples
 
-This file contains configuration examples for integrating Enphase Envoy data with Home Assistant.
+Ready-to-use YAML configurations are in the [`examples/`](examples/) directory, organised by data mode:
 
-### `configuration.yaml` configuration examples For FW 5
+| Mode | File | When to use |
+|------|------|-------------|
+| **SSE** (default) | [`examples/sse/home-assistant.yaml`](examples/sse/home-assistant.yaml) | `USE_SSE: true` — recommended for all firmware |
+| **Polling** | [`examples/polling/home-assistant.yaml`](examples/polling/home-assistant.yaml) | `USE_SSE: false` — legacy, or battery setups |
+
+Copy the relevant file's contents into your `configuration.yaml`. Adjust `state_topic` to match your `MQTT_TOPIC` setting.
+
+See [`examples/README.md`](examples/README.md) for a full explanation of the JSON structures and field mappings.
+
+---
+
+The inline examples below are kept for reference.
+
+### `configuration.yaml` configuration examples For FW 5 / SSE mode
 
 ```yaml
 # Example configuration.yaml entry
@@ -84,7 +97,7 @@ sensor:
 #
 ```
 
-### `configuration.yaml` configuration examples For FW 7 and FW 8
+### `configuration.yaml` configuration examples For FW 7 and FW 8 (polling mode)
 
 ```yaml
 mqtt:
@@ -123,7 +136,7 @@ mqtt:
       device_class: power_factor
 ```
 
-### `configuration.yaml` configuration examples For FW 8 (with batteries)
+### `configuration.yaml` configuration examples For FW 8 with batteries (polling mode)
 
 ```yaml
 mqtt:
