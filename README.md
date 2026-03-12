@@ -5,7 +5,7 @@ A Python script that takes a real time json stream from an Enphase Envoy and pub
 Now works with 7.x.x and 8.x.x firmware - thanks to @helderd
 
 > [!NOTE]
-> **March 2026** - Added support for the Enphase SSE (`/stream/meter`) endpoint for real-time updates on all firmware versions. SSE is now the default mode (`USE_SSE: true`), delivering ~1 update/second with negligible Envoy load and no polling interval needed. The previous polling behaviour is still available by setting `USE_SSE: false`. See [`examples/`](examples/) for ready-to-use Home Assistant and OpenHAB configurations for both modes.
+> **March 2026** - Added support for the Enphase SSE (`/stream/meter`) endpoint for real-time updates on all firmware versions. SSE is the suggested default method to be used. By default it is set to false (`USE_SSE: false`) as existing users will need to use modified templates. Step by step assistance is provided below to assist you in creating these templates if you decide to use the SSE method. The previous polling behaviour is still available by setting `USE_SSE: false`. See [`examples/`](examples/) for ready-to-use Home Assistant and OpenHAB configurations for both modes.
 
 > [!NOTE]
 > **December 2025** - FW D8.3.5286 (da7504) and probably onwards removed the non-SSL, port 80 & http://.. endpoints from local Envoys but https:// ones are (still) available. Added the ENVOY_USE_HTTPS toggle switch in the configuration to address this and make the add-on use https:// based requests. with thanks to https://github.com/joergbattermann
